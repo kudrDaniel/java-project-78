@@ -37,6 +37,11 @@ lint:
 update-deps:
 	$(GRADLEW_DIST) useLatestVersions
 
+mk-gradlew-exec:
+	git update-index --chmod=+x gradlew
+	git commit -m "Make gradlew executable"
+	git push
+
 
 build-run: build run
 

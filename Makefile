@@ -27,6 +27,9 @@ lint:
 update-deps:
 	make -C app update-deps
 
+mk-gradlew-exec:
+	make -C app mk-gradlew-exec
+
 
 build-run: build run
 
