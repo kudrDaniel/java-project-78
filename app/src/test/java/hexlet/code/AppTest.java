@@ -12,11 +12,13 @@ public class AppTest {
     public void appTest() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
+        App actual0 = new App();
         App.main(new String[]{});
-        String actual = outputStream.toString();
+        String actual1 = outputStream.toString();
 
-        String expected = "Project initialized successful";
+        String expected1 = "Project initialized successful";
 
-        assertThat(actual.trim()).isEqualTo(expected.trim());
+        assertThat(actual0).isNotNull();
+        assertThat(actual1.trim()).isEqualTo(expected1.trim());
     }
 }
