@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -20,5 +21,32 @@ public class AppTest {
 
         assertThat(actual0).isNotNull();
         assertThat(actual1.trim()).isEqualTo(expected1.trim());
+    }
+
+    @Test
+    public void validatorTest() {
+        Validator v = new Validator();
+
+        StringSchema schema = v.string();
+
+        assertThat(schema.isValid("")).isTrue();
+        assertThat(schema.isValid(null)).isTrue();
+
+        schema.required();
+
+        assertThat(schema.isValid(null)).isFalse();
+        assertThat(schema.isValid("")).isFalse();
+        assertThat(schema.isValid(Integer.parseInt("5"))).isFalse();
+        assertThat(schema.isValid("what does the fox say")).isTrue();
+        assertThat(schema.isValid("hexlet")).isTrue();
+
+        assertThat(schema.contains("wh").isValid("what does the fox say")).isTrue();
+        assertThat(schema.contains("what").isValid("what does the fox say")).isTrue();
+        assertThat(schema.contains("whatthe").isValid("what does the fox say")).isFalse();
+
+        schema.contains(null).minLength(Integer.parseInt("5"));
+
+        assertThat(schema.isValid("what does the fox say")).isTrue();
+        assertThat(schema.isValid("what")).isFalse();
     }
 }
