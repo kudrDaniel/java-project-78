@@ -1,0 +1,9 @@
+/**/.idea/
+
+/**/.gradle/
+
+/**/build/
+
+/**/logs/
+
+*.class
