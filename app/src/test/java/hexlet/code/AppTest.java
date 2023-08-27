@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.schemas.NumberSchema;
 import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ public class AppTest {
     }
 
     @Test
-    public void validatorTest() {
+    public void validatorStringSchemaTest() {
         Validator v = new Validator();
 
         StringSchema schema = v.string();
@@ -48,5 +49,32 @@ public class AppTest {
 
         assertThat(schema.isValid("what does the fox say")).isTrue();
         assertThat(schema.isValid("what")).isFalse();
+    }
+
+    @Test
+    public void validatorNumberSchemaTest() {
+        Validator v = new Validator();
+
+        NumberSchema schema = v.number();
+
+        assertThat(schema.isValid(null)).isTrue(); // true
+        assertThat(schema.positive().isValid(null)).isTrue(); // true
+
+        schema.required();
+
+        assertThat(schema.isValid(null)).isFalse(); // false
+        assertThat(schema.isValid("5")).isFalse(); // false
+        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue(); // true
+
+        assertThat(schema.isValid(Integer.parseInt("-10"))).isFalse(); // false
+
+        assertThat(schema.isValid(Integer.parseInt("0"))).isFalse(); // false
+
+        schema.range(Integer.parseInt("5"), Integer.parseInt("10"));
+
+        assertThat(schema.isValid(Integer.parseInt("5"))).isTrue(); // true
+        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue(); // true
+        assertThat(schema.isValid(Integer.parseInt("4"))).isFalse(); // false
+        assertThat(schema.isValid(Integer.parseInt("11"))).isFalse(); // false
     }
 }
