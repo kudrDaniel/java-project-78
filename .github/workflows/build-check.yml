@@ -29,10 +29,12 @@ jobs:
       uses: lostick/path-filtering-action@main
       with:
         config_file: .github/build-check-filter.yml
+    - name: Set env
+      run: echo "IS_SOURCE_CHANGED=env.DIFF_DETECTED" >> $GITHUB_ENV
 
   build:
     name: Build and make test coverage report
-    if: env.DIFF_DETECTED == 'true'
+    if: env.IS_SOURCE_CHANGED == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
