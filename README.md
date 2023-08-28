@@ -21,7 +21,7 @@ This project provides an opportunity to validate some data types by different op
 
 ### Step 2
 
-For start using go to _java-project-78-main/app_ and type in shell './gradlew --console plain jshell'
+For start using go to _java-project-78-main/app_ and type in shell `./gradlew --console plain jshell`
 
 > [!IMPORTANT]
 > To start this validator __jdk version must be 20__
@@ -32,7 +32,7 @@ For start using go to _java-project-78-main/app_ and type in shell './gradlew --
 
 Validator class provide three _public_ methods that returns new instance of schema:
 
-'''
+```
 Validator v = new Validator();
 
 Map<String, BaseSchema> schemas = Map.of(
@@ -40,23 +40,23 @@ Map<String, BaseSchema> schemas = Map.of(
 	"age", v.number(),
 	"data", v.map
 );
-'''
+```
 
 ### BaseSchema
 
 BaseSchema is abstract class of all schemas and provide common version of _isValid()_ method that must be overriden in child classes:
 
-'''
+```
 schemas.get("name").isValid(null); // true
 schemas.get("age").isValid(null); // true
 schemas.get("data").isValid(null); // true
-'''
+```
 
 ### StringSchema
 
 StringSchema class provide four _public_ methods. Three of them set checks of this schema
 
-'''
+```
 StringSchema schema = v.string();
 
 schema.required();
@@ -65,13 +65,13 @@ schema.minLength(6);
 schema.isValid("Jonny Cash"); //true
 schema.contains("ell");
 schema.isValid("Hello!"); // true
-'''
+```
 
 ### NumberSchema
 
 NumberSchema class provide four _public_ methods. Three of them set checks of this schema
 
-'''
+```
 NumberSchema schema = v.number();
 
 schema.required();
@@ -80,13 +80,13 @@ schema.positive();
 schema.isValid(1); // true
 schema.range(2, 2);
 schema.isValid(2); // true
-'''
+```
 
 ### MapSchema
 
 StringSchema class provide four _public_ methods. Three of them set checks of this schema
 
-'''
+```
 MapSchema schema = v.map();
 Map<String, BaseSchema> rules = Map.of(
 	"name", v.string().required(),
@@ -105,7 +105,7 @@ schema.isValid(Map.of(
 	"name", "Boris",
 	"age", 34
 )); // true
-'''
+```
 
 # Example
 
