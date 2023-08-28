@@ -10,19 +10,30 @@ name: Java CI
 on:
   push:
     branches:
-      - '**'
+    - '**'
     tags:
-      - '**'
+     - '**'
   pull_request:
     branches:
-      - '**'
+     - '**'
     tags:
-      - '**'
+     - '**'
 
 jobs:
-  build:
+  filtering:
+    name: Check what files are changed
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Filter paths
+      uses: lostick/path-filtering-action@main
+      with:
+        config_file: .github/build-check-filter.yml
 
+  build:
+    name: Build and make test coverage report
+    if: env.DIFF_DETECTED == 'true'
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 20.0.2
@@ -35,7 +46,7 @@ jobs:
       with:
           arguments: build
           build-root-directory: app
-    - name: Publish code coverage
+    - name: Report test coverage to codeclimate
       uses: paambaati/codeclimate-action@v3.0.0
       env:
            CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
