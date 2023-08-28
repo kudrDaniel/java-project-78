@@ -23,18 +23,22 @@ jobs:
   filtering:
     name: Check what files are changed
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{steps.setenv.outputs.variable}}
     steps:
     - uses: actions/checkout@v3
     - name: Filter paths
       uses: lostick/path-filtering-action@main
       with:
         config_file: .github/build-check-filter.yml
-    - name: Set env
-      run: echo "IS_SOURCE_CHANGED=env.DIFF_DETECTED" >> $GITHUB_ENV
+    - name: Set variable
+      id: setvar
+      run: echo "variable=env.DIFF_DETECTED" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build and make test coverage report
-    if: env.IS_SOURCE_CHANGED == 'true'
+    needs: filtering
+    if: needs.filtering.outputs.output1 == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
