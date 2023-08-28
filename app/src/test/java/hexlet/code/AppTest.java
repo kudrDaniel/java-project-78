@@ -1,11 +1,14 @@
 package hexlet.code;
 
+import hexlet.code.schemas.MapSchema;
 import hexlet.code.schemas.NumberSchema;
 import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,24 +60,47 @@ public class AppTest {
 
         NumberSchema schema = v.number();
 
-        assertThat(schema.isValid(null)).isTrue(); // true
-        assertThat(schema.positive().isValid(null)).isTrue(); // true
+        assertThat(schema.isValid(null)).isTrue();
+        assertThat(schema.positive().isValid(null)).isTrue();
 
         schema.required();
 
-        assertThat(schema.isValid(null)).isFalse(); // false
-        assertThat(schema.isValid("5")).isFalse(); // false
-        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue(); // true
+        assertThat(schema.isValid(null)).isFalse();
+        assertThat(schema.isValid("5")).isFalse();
+        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue();
 
-        assertThat(schema.isValid(Integer.parseInt("-10"))).isFalse(); // false
+        assertThat(schema.isValid(Integer.parseInt("-10"))).isFalse();
 
-        assertThat(schema.isValid(Integer.parseInt("0"))).isFalse(); // false
+        assertThat(schema.isValid(Integer.parseInt("0"))).isFalse();
 
         schema.range(Integer.parseInt("5"), Integer.parseInt("10"));
 
-        assertThat(schema.isValid(Integer.parseInt("5"))).isTrue(); // true
-        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue(); // true
-        assertThat(schema.isValid(Integer.parseInt("4"))).isFalse(); // false
-        assertThat(schema.isValid(Integer.parseInt("11"))).isFalse(); // false
+        assertThat(schema.isValid(Integer.parseInt("5"))).isTrue();
+        assertThat(schema.isValid(Integer.parseInt("10"))).isTrue();
+        assertThat(schema.isValid(Integer.parseInt("4"))).isFalse();
+        assertThat(schema.isValid(Integer.parseInt("11"))).isFalse();
+    }
+
+    @Test
+    public void validatorMapSchemaTest() {
+        Validator v = new Validator();
+
+        MapSchema schema = v.map();
+
+        assertThat(schema.isValid(null)).isTrue();
+
+        schema.required();
+
+        assertThat(schema.isValid(null)).isFalse();
+        assertThat(schema.isValid(new HashMap<>())).isTrue();
+        Map<String, String> data = new HashMap<>();
+        data.put("key1", "value1");
+        assertThat(schema.isValid(data)).isTrue();
+
+        schema.sizeof(Integer.parseInt("2"));
+
+        assertThat(schema.isValid(data)).isFalse();
+        data.put("key2", "value2");
+        assertThat(schema.isValid(data)).isTrue();
     }
 }
