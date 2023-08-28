@@ -23,7 +23,7 @@ run-dist:
 	$(APP_DIST)
 
 run:
-	$(GRADLEW_DIST) run --args='file1.json file2.json'
+	$(GRADLEW_DIST) --console plain jshell
 
 test:
 	$(GRADLEW_DIST) test
