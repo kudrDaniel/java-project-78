@@ -3,54 +3,33 @@ package hexlet.code.schemas;
 import lombok.NonNull;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public final class MapSchema extends BaseSchema {
-    private Integer sizeof;
-
-    private Map<String, BaseSchema> shape;
-
     public MapSchema required() {
-        super.setRequired(true);
+        super.addCheck("required", obj -> obj instanceof Map<?, ?>);
         return this;
     }
 
-    public MapSchema sizeof(Integer value) {
-        this.sizeof = value;
+    public MapSchema sizeof(Integer sizeof) {
+        super.addCheck("sizeof", obj -> obj instanceof Map<?, ?> map
+                && map.size() == sizeof);
         return this;
     }
 
-    public MapSchema shape(@NonNull Map<String, BaseSchema> schemas) {
-        this.shape = schemas;
+    public MapSchema shape(@NonNull Map<String, BaseSchema> shape) {
+        super.addCheck("shape", obj -> obj instanceof Map<?, ?> map
+                && isShapeValid(map, shape));
         return this;
     }
 
-    @Override
-    public Boolean isValid(Object object) {
-        if (object instanceof Map<?, ?> map) {
-            Boolean isSizeofValid = true;
-            if (this.sizeof != null) {
-                isSizeofValid = map.size() == this.sizeof;
-            }
-            Boolean isShapeValid = true;
-            if (this.shape != null && !this.shape.isEmpty() && !map.isEmpty()) {
-                isShapeValid = isShapeValid(map);
-            }
-            return isSizeofValid && isShapeValid;
-        } else {
-            return super.isValid(object);
-        }
-    }
-
-    private Boolean isShapeValid(Map<?, ?> check) {
-        return check.entrySet().stream()
-                .filter(entry -> {
+    private Boolean isShapeValid(Map<?, ?> check, Map<String, BaseSchema> shape) {
+        return !check.isEmpty() && !shape.isEmpty() && check.entrySet().stream()
+                .allMatch(entry -> {
                     if (entry.getKey() instanceof String key) {
-                        BaseSchema schema = this.shape.getOrDefault(key, new BaseSchema() { });
+                        BaseSchema schema = shape.getOrDefault(key, new BaseSchema() { });
                         return schema.isValid(entry.getValue());
                     }
                     return false;
-                })
-                .collect(Collectors.toSet()).size() == check.size();
+                });
     }
 }
